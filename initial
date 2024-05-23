@@ -1,0 +1,71 @@
+import pygame
+import os
+
+# Initialize pygame
+pygame.init()
+
+# Constants
+SCREEN_WIDTH, SCREEN_HEIGHT = 800, 800
+SQUARE_SIZE = SCREEN_WIDTH // 8
+PIECE_SIZE = SQUARE_SIZE - 10
+WHITE, BLACK = (255, 255, 255), (0, 0, 0)
+FPS = 60
+
+# Load images
+def load_images():
+    pieces = {}
+    for piece in ['bB', 'bK', 'bN', 'bP', 'bQ', 'bR', 'wB', 'wK', 'wN', 'wP', 'wQ', 'wR']:
+        pieces[piece] = pygame.transform.scale(pygame.image.load(os.path.join("images", f"{piece}.png")), (PIECE_SIZE, PIECE_SIZE))
+    return pieces
+
+# Draw board
+def draw_board(screen):
+    for row in range(8):
+        for col in range(8):
+            color = WHITE if (row + col) % 2 == 0 else BLACK
+            pygame.draw.rect(screen, color, (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+
+# Draw pieces
+def draw_pieces(screen, board, pieces):
+    for row in range(8):
+        for col in range(8):
+            piece = board[row][col]
+            if piece != "--":
+                screen.blit(pieces[piece], (col * SQUARE_SIZE + 5, row * SQUARE_SIZE + 5))
+
+# Initial board setup
+def initial_board():
+    return [
+        ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
+        ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
+        ["--", "--", "--", "--", "--", "--", "--", "--"],
+        ["--", "--", "--", "--", "--", "--", "--", "--"],
+        ["--", "--", "--", "--", "--", "--", "--", "--"],
+        ["--", "--", "--", "--", "--", "--", "--", "--"],
+        ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
+        ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]
+    ]
+
+# Main game loop
+def main():
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption("Chess")
+    clock = pygame.time.Clock()
+    pieces = load_images()
+    board = initial_board()
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        draw_board(screen)
+        draw_pieces(screen, board, pieces)
+        pygame.display.flip()
+        clock.tick(FPS)
+
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
